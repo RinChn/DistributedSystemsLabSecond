@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/001-create-directors-table.sql
+  - include:
+      file: db/changelog/002-create-films-table.sql
+  - include:
+      file: db/changelog/003-create-sessions-table.sql
+  - include:
+      file: db/changelog/004-create-tickets-table.sql
