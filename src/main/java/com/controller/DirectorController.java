@@ -1,7 +1,7 @@
 package com.controller;
 
 import com.dto.DirectorDto;
-import com.service.DirectorService;
+import com.service.DirectorServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class DirectorController {
-    private final DirectorService directorService;
+    private final DirectorServiceImpl directorService;
 
     @GetMapping
     public List<DirectorDto> getAllDirectors() {
