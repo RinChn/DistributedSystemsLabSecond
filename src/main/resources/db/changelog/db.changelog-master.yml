@@ -7,3 +7,7 @@ databaseChangeLog:
       file: db/changelog/003-create-sessions-table.sql
   - include:
       file: db/changelog/004-create-tickets-table.sql
+  - include:
+      file: db/changelog/005-fill-directors-table.sql
+  - include:
+      file: db/changelog/006-fill-films-table.sql
