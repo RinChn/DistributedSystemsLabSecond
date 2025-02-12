@@ -1,9 +1,7 @@
 package com.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -11,6 +9,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "sessions")
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Session {
@@ -20,7 +20,7 @@ public class Session {
     UUID id;
     @Column(name = "date_and_time", nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
             @Builder.Default
-    Timestamp date = new Timestamp(System.currentTimeMillis());
+    Timestamp timeAndDate = new Timestamp(System.currentTimeMillis());
     @Column(name = "cinema_hall_number", nullable = false, columnDefinition = "Integer default 1")
             @Builder.Default
     Integer cinemaHallNumber = 1;

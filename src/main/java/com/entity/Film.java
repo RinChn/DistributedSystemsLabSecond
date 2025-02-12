@@ -2,9 +2,7 @@ package com.entity;
 
 import com.util.Genre;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Check;
 
 import java.util.UUID;
@@ -12,6 +10,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "films")
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
