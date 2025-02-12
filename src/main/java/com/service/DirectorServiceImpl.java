@@ -2,6 +2,8 @@ package com.service;
 
 import com.dto.DirectorDto;
 import com.entity.Director;
+import com.exception.ApplicationException;
+import com.exception.ErrorType;
 import com.repository.DirectorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -30,7 +32,9 @@ public class DirectorServiceImpl implements DirectorService {
     public DirectorDto addDirector(DirectorDto directorDto) {
         Director director = conversionService.convert(directorDto, Director.class);
         directorRepository.findByName(director.getFirstName(), director.getLastName())
-                .ifPresent(result -> new RuntimeException("Such a director is already in the database."));
+                .ifPresent(result -> {
+                    throw new ApplicationException(ErrorType.DUPLICATE_DIRECTOR);
+                });
         directorRepository.save(director);
         return directorDto;
     }
@@ -40,8 +44,15 @@ public class DirectorServiceImpl implements DirectorService {
     public UUID deleteDirector(DirectorDto directorDto) {
         Director director = conversionService.convert(directorDto, Director.class);
         director = directorRepository.findByName(director.getFirstName(), director.getLastName())
-                .orElseThrow(() -> new RuntimeException("Director not found"));
+                .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_DIRECTOR));
         directorRepository.delete(director);
         return director.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Director findByName(String fullName) {
+        List<String> directorName = List.of(fullName.split(" "));
+        return directorRepository.findByName(directorName.getFirst(), directorName.getLast())
+                .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_DIRECTOR));
     }
 }
