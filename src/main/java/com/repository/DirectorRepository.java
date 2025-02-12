@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface DirectorRepository extends JpaRepository<Director, UUID> {
     @Query("SELECT d FROM Director d WHERE d.firstName = :first AND d.lastName = :last")
-    Optional<Director> findByName(@Param("first") String firstName, @Param("second") String lastName);
+    Optional<Director> findByName(@Param("first") String firstName, @Param("last") String lastName);
 }
