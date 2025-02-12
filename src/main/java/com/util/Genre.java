@@ -7,7 +7,6 @@ public enum Genre {
     DRAMA,
     HORROR,
     THRILLER,
-    SCIENCE_FICTION,
     FANTASY,
     ROMANCE,
     MYSTERY,
