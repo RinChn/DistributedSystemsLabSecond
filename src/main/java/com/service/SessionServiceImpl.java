@@ -1,5 +1,10 @@
 package com.service;
 
+import com.controller.request.SessionCreateRequest;
+import com.controller.request.SessionSearchRequest;
+import com.controller.request.TicketRequest;
+import com.controller.response.SessionResponse;
+import com.controller.response.TicketResponse;
 import com.dto.*;
 import com.entity.Director;
 import com.entity.Film;

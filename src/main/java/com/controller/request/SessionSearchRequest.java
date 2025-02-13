@@ -1,4 +1,4 @@
-package com.dto;
+package com.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;

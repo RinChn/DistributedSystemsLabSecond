@@ -1,4 +1,4 @@
-package com.dto;
+package com.controller.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.converter;
 
 import com.dto.FilmDto;
-import com.dto.SessionResponse;
+import com.controller.response.SessionResponse;
 import com.entity.Session;
 import com.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;

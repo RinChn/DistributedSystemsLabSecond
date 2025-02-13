@@ -1,6 +1,6 @@
 package com.converter;
 
-import com.dto.TicketResponse;
+import com.controller.response.TicketResponse;
 import com.entity.Ticket;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
-package com.dto;
+package com.controller.response;
 
+import com.dto.FilmDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
