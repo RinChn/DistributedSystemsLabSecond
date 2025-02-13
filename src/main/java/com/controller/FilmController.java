@@ -1,7 +1,8 @@
 package com.controller;
 
 import com.dto.FilmDto;
-import com.dto.FilmDeleteRequest;
+import com.controller.request.FilmDeleteRequest;
+import com.dto.FilmSearchFilter;
 import com.service.FilmServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,10 @@ public class FilmController {
     @DeleteMapping
     public UUID deleteFilm(@Valid @RequestBody FilmDeleteRequest request) {
         return filmService.deleteFilm(request);
+    }
+
+    @GetMapping("/search")
+    public List<FilmDto> searchFilms(@RequestBody FilmSearchFilter filter) {
+        return filmService.searchFilms(filter);
     }
 }

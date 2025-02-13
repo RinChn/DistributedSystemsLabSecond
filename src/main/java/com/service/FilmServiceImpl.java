@@ -1,7 +1,8 @@
 package com.service;
 
 import com.dto.FilmDto;
-import com.dto.FilmDeleteRequest;
+import com.controller.request.FilmDeleteRequest;
+import com.dto.FilmSearchFilter;
 import com.entity.Director;
 import com.entity.Film;
 import com.exception.ApplicationException;
@@ -54,5 +55,19 @@ public class FilmServiceImpl implements FilmService {
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_DIRECTOR));
         filmRepository.delete(film);
         return film.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FilmDto> searchFilms(FilmSearchFilter filmSearchFilter) {
+        Director director = null;
+        if (filmSearchFilter.getDirectorName() != null) {
+            director = directorService.findByName(filmSearchFilter.getDirectorName());
+        }
+        return filmRepository.searchFilm(filmSearchFilter.getTitle(), director, filmSearchFilter.getMaxYearReleased(),
+                filmSearchFilter.getMinYearReleased(), filmSearchFilter.getMaxLength(),
+                filmSearchFilter.getMinLength(), filmSearchFilter.getGenre()).stream()
+                .map(film -> conversionService.convert(film, FilmDto.class))
+                .toList();
     }
 }
