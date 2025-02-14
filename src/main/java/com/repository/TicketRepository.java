@@ -21,7 +21,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     @Query("SELECT t FROM Ticket t WHERE t.session = :session")
     List<Ticket> getAllTicketsBySession(@Param("session") Session session);
 
-    @Query("SELECT t FROM Ticket t WHERE t.session = :session AND t.placeNumber = :place AND t.rowNumber = :row")
+    @Query("SELECT t FROM Ticket t JOIN FETCH t.session WHERE t.session = :session " +
+            "AND t.placeNumber = :place AND t.rowNumber = :row")
     Optional<Ticket> getTicketBySessionAndNumber(@Param("session") Session session,
                                                  @Param("row") Integer row,
                                                  @Param("place") Integer place);
