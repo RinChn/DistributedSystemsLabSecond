@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -62,6 +63,7 @@ public class SessionServiceImpl implements SessionService {
                 .findByTitleAndDirector(sessionDto.getFilmTitle(), director)
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_MOVIE));
         Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), sessionDto.getDate());
+        log.info("{}", timestampOfSession);
         sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
                 .ifPresent(_ -> {
                         throw new ApplicationException(ErrorType.HALL_IS_OCCUPIED);
@@ -191,5 +193,45 @@ public class SessionServiceImpl implements SessionService {
         ticketRepository.deleteAll(ticketRepository.getAllTicketsBySession(session));
         sessionRepository.delete(session);
         return session.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SessionResponse> searchSessions(SessionSearchFilter filter) {
+        Time minTime;
+        if (filter.getMinTime() != null)
+            minTime = filter.getMinTime();
+        else
+            minTime = Time.valueOf("00:00:00");
+        Time maxTime;
+        if (filter.getMaxTime() != null)
+            maxTime = filter.getMaxTime();
+        else
+            maxTime = Time.valueOf("23:59:59");
+        Date minDate;
+        if (filter.getMinDate() != null)
+            minDate = filter.getMinDate();
+        else
+            minDate = Date.valueOf("1895-12-28");
+        Date maxDate;
+        if (filter.getMaxDate() != null)
+            maxDate = filter.getMaxDate();
+        else
+            maxDate = Date.valueOf("3000-12-31");
+        Timestamp minTimestamp = getTimestamp(minTime, minDate);
+        log.info("Min time and date {}", minTimestamp);
+        Timestamp maxTimestamp = getTimestamp(maxTime, maxDate);
+        log.info("Max time and date {}", maxTimestamp);
+        return sessionRepository.findSessionsByFilter(minTimestamp, maxTimestamp,
+                filter.getCinemaHallNumber(), filter.getMovieName()).stream()
+                .map(session -> SessionResponse.builder()
+                        .time(new Time(session.getTimeAndDate().getTime()))
+                        .film(conversionService.convert(session.getFilm(), FilmDto.class))
+                        .date(session.getTimeAndDate())
+                        .cinemaHallNumber(session.getCinemaHallNumber())
+                        .numberOfTicketsAvailable(ticketRepository.getTicketsBySessionAndBought(session, false).size())
+                        .numberOfTicketsSold(ticketRepository.getTicketsBySessionAndBought(session, true).size())
+                        .build())
+                .toList();
     }
 }

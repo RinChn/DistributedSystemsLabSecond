@@ -5,6 +5,7 @@ import com.controller.request.SessionSearchRequest;
 import com.controller.request.TicketRequest;
 import com.controller.response.SessionResponse;
 import com.controller.response.TicketResponse;
+import com.dto.SessionSearchFilter;
 import com.service.SessionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,11 @@ public class SessionController {
     @DeleteMapping
     public UUID deleteSession(@RequestBody @Valid SessionSearchRequest sessionSearchRequest) {
         return sessionService.deleteSession(sessionSearchRequest);
+    }
+
+    @GetMapping("/search")
+    public List<SessionResponse> searchSessions(@Valid @RequestBody SessionSearchFilter request) {
+        return sessionService.searchSessions(request);
     }
 
 }
