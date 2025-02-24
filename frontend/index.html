@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sass/style.css">
+    <title>В кино</title>
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper header__wrapper">
+            <h1>В кино</h1>
+            <nav class="header__navigation">
+                <ul class="navigation">
+                    <li class="navigation__link">Сеансы</li>
+                    <li class="navigation__link">Фильмы</li>
+                    <li class="navigation__link">Режиссеры</li>
+                </ul>
+            </nav>
+            <input type="text" class="search" placeholder="Название фильма, режиссер...">
+        </div>
+    </header>
+
+    <main>
+        <section id="films">
+            <div class="wrapper" >
+                <div id="film-list"></div>
+            </div>
+        </section>
+
+        <div id="modal" class="modal">
+            <div class="modal__content">
+                <span class="modal__close">&times;</span>
+                <h2>Добавить фильм</h2>
+                <form id="film-form">
+                    <div class="form-item">
+                        <label for="title">Название:</label>
+                        <input type="text" id="title" class="search" required>
+                    </div>
+                    
+                    <div class="form-item">
+                        <label for="director">Режиссер:</label>
+                        <input type="text" id="director" class="search" required>
+                    </div>
+                    
+                    <div class="form-item">
+                        <label for="year">Год выпуска:</label>
+                        <input type="number" id="year" class="search" required>
+                    </div>
+                    
+                    <div class="form-item">
+                        <label for="duration">Длительность (мин):</label>
+                        <input type="number" id="duration" class="search" required>
+                    </div>
+                    
+                    <div class="form-item">
+                        <label for="genre">Жанр:</label>
+                        <select id="genre" required>
+                            <option value="" disabled selected>Выберите жанр</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-item">
+                        <button type="submit" class="button button_main">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="wrapper footer__wrapper">
+            <button class="button button_main" id="modal__open">Добавить фильм</button>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
