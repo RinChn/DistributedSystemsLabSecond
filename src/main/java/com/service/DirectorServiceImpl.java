@@ -52,10 +52,16 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     @Transactional(readOnly = true)
     public List<DirectorDto> searchDirectors(DirectorDto directorDto) {
-        List<String> directorName = List.of(directorDto.getName().split(" "));
-        return directorRepository.findByNameLike(directorName.getFirst(), directorName.getLast()).stream()
-                .map(director -> conversionService.convert(director, DirectorDto.class))
-                .toList();
+        String[] parts = directorDto.getName().trim().split("\\s+");
+        if (parts.length > 1) {
+            return directorRepository.findByTwoNamesLike(parts[0], parts[1]).stream()
+                    .map(director -> conversionService.convert(director, DirectorDto.class))
+                    .toList();
+        } else {
+            return directorRepository.searchByFirstOrLastName(directorDto.getName()).stream()
+                    .map(director -> conversionService.convert(director, DirectorDto.class))
+                    .toList();
+        }
     }
 
     @Transactional(readOnly = true)
