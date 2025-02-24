@@ -33,7 +33,7 @@ public class DirectorController {
     }
 
     @GetMapping("/search")
-    public List<DirectorDto> searchDirector(@RequestParam DirectorDto requestDto) {
+    public List<DirectorDto> searchDirector(@RequestBody DirectorDto requestDto) {
         return directorService.searchDirectors(requestDto);
     }
 
