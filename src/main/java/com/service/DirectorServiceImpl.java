@@ -49,6 +49,15 @@ public class DirectorServiceImpl implements DirectorService {
         return director.getId();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<DirectorDto> searchDirectors(DirectorDto directorDto) {
+        List<String> directorName = List.of(directorDto.getName().split(" "));
+        return directorRepository.findByNameLike(directorName.getFirst(), directorName.getLast()).stream()
+                .map(director -> conversionService.convert(director, DirectorDto.class))
+                .toList();
+    }
+
     @Transactional(readOnly = true)
     public Director findByName(String fullName) {
         List<String> directorName = List.of(fullName.split(" "));

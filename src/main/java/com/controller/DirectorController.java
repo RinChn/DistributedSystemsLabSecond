@@ -32,4 +32,9 @@ public class DirectorController {
         return directorService.deleteDirector(directorDto);
     }
 
+    @GetMapping("/search")
+    public List<DirectorDto> searchDirector(@RequestParam DirectorDto requestDto) {
+        return directorService.searchDirectors(requestDto);
+    }
+
 }
