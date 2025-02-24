@@ -1,0 +1,17 @@
+@use "../abstract/constant" as *;
+
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.col_header, .table_data {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid $color-dark-grey;
+}
+
+.col_header {
+    font-size: 2.2rem;
+}

@@ -1,0 +1,21 @@
+@use "../abstract/constant" as *;
+
+.button {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.8rem;
+    font-family: 'Jost', Verdana, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.button_main {
+    background-color: $color-main;
+    color: $color-light;
+}
+
+.button_main:hover{
+    background-color: $color-addi;
+}

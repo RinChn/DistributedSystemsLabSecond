@@ -1,0 +1,16 @@
+@use "../abstract/constant" as *;
+
+.search {
+    background-color: $color-grey;
+    border: none;
+    border-radius: 20px;
+    width: 300px;
+    padding: 10px 20px;
+    font-size: 1.8rem;
+    font-family: 'Jost', Verdana, sans-serif;
+}
+
+.search::placeholder {
+    font-size: 1.8rem;
+    font-family: 'Jost', Verdana, sans-serif;
+}
