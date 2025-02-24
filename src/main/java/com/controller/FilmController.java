@@ -14,14 +14,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/films")
+@CrossOrigin(origins = "http://localhost:5500")
 @Slf4j
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmServiceImpl filmService;
-
     @GetMapping
     public List<FilmDto> getAllFilms(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-                                     @RequestParam(value = "limit", defaultValue = "5") Integer pageSize) {
+                                     @RequestParam(value = "limit", defaultValue = "100") Integer pageSize) {
         return filmService.getAllFilms(pageNumber, pageSize);
     }
 

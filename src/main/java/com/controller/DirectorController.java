@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/directors")
+@CrossOrigin(origins = "http://localhost:5500")
 @Slf4j
 @RequiredArgsConstructor
 public class DirectorController {

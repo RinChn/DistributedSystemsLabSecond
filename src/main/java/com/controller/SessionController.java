@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/sessions")
+@CrossOrigin(origins = "http://localhost:5500")
 @Slf4j
 @RequiredArgsConstructor
 public class SessionController {
