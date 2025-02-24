@@ -1,0 +1,29 @@
+@use "../abstract/constant" as *;
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: $color-light;
+    box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 20px 0;
+}
+
+.header__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navigation {
+    display: flex;
+    
+}
+
+.navigation__link {
+    list-style: none;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
