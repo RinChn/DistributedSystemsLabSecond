@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Загружаем список режиссеров при загрузке страницы
     fetchDirectors();
     // Инициализация модального окна
-    //initModal();
+    initModal();
 
     // Инициализация поисковой строки
     const searchInput = document.querySelector('.search');
@@ -57,6 +57,69 @@ function renderDirectors(data) {
     
     table.appendChild(tbody);
     wrapper.appendChild(table);
+}
+
+// Функция для инициализации модального окна
+function initModal() {
+    const modal = document.getElementById("modal");
+    const openModalBtn = document.getElementById("modal__open");
+    const closeModalBtn = document.querySelector(".modal__close");
+    const form = document.getElementById("director-form");
+
+    // Открытие модального окна
+    openModalBtn.addEventListener("click", () => {
+        modal.style.display = "flex";
+    });
+
+    // Закрытие окна при клике на "×"
+    closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // Закрытие при клике вне окна
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // Обработчик отправки формы
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        // Собираем данные формы
+        const director = {
+            name: document.getElementById('name').value + ' ' + document.getElementById('last-name').value
+        };
+
+        // Добавляем режиссера
+        addDirector(director);
+
+        // Закрываем модальное окно
+        modal.style.display = "none";
+
+        // Очищаем форму
+        form.reset();
+    });
+}
+
+// Функция для добавления режиссера
+function addDirector(director) {
+    fetch('http://localhost:8080/api/v1/directors', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(director)
+    })
+    .then(response => {
+        if (response.ok) {
+            fetchDirectors(); // Обновление списка после добавления
+        } else {
+            console.error('Ошибка при добавлении режиссера');
+        }
+    })
+    .catch(error => console.error('Ошибка сети:', error));
 }
 
 // Функция для удаления режиссера с проверкой на привязанные фильмы
