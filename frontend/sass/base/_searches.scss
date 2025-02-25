@@ -1,6 +1,7 @@
 @use "../abstract/constant" as *;
 
 .search {
+    position: relative;
     background-color: $color-grey;
     border: none;
     border-radius: 20px;

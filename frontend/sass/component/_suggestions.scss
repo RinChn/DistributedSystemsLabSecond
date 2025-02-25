@@ -1,0 +1,30 @@
+@use "../abstract/constant" as *;
+
+#suggestions {
+    display: none; /* По умолчанию скрыто */
+    position: absolute;
+    top: 100%; /* Располагаем подсказки сразу под полем ввода */
+    right: 90px;
+    left: auto;
+    background-color: $color-light;
+    border: 1px solid $color-grey;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto; /* Прокрутка, если подсказок много */
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: auto;
+    min-width: 400px;
+    box-sizing: border-box;
+}
+
+/* Стили для каждой подсказки */
+.suggestion {
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.suggestion:hover {
+    background-color: $color-grey;
+}
