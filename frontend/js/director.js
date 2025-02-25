@@ -50,7 +50,7 @@ function renderDirectors(data) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="table_data">${director.name}</td>
-            <td class="table_data"><button onclick="deleteDirector('${director.name}')">Удалить</button></td>
+            <td class="table_data"><button class="button delete-button" onclick="deleteDirector('${director.name}')"></button></td>
         `;
         tbody.appendChild(row);
     });
