@@ -1,86 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Загружаем список фильмов при загрузке страницы
     fetchFilms();
-    
     // Инициализация модального окна
     initModal();
-    
+
+    // Инициализация поисковой строки
+    const searchInput = document.querySelector('.search');
+    searchInput.addEventListener('input', debounce(handleSearchInput, 300));
+    searchInput.addEventListener('keydown', handleSearchKeyDown);
 });
 
-// Функция для получения списка фильмов и их отображения в виде таблицы
+// Функция для получения всех фильмов
 function fetchFilms() {
     fetch('http://localhost:8080/api/v1/films')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            const wrapper = document.querySelector('#films .wrapper');
-            wrapper.innerHTML = ''; // Очистка контейнера
-            
-            // Создание таблицы
-            const table = document.createElement('table');
-            table.classList.add('table');
-            
-            // Создание заголовков таблицы
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            const headers = ['Название', 'Режиссер', 'Год выпуска', 'Длительность', 'Жанр', ''];
-            
-            headers.forEach(text => {
-                const th = document.createElement('th');
-                th.classList.add('col_header');
-                th.textContent = text;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-            
-            // Создание тела таблицы
-            const tbody = document.createElement('tbody');
-            
-            data.forEach(film => {
-                const row = document.createElement('tr');
-                
-                const title = document.createElement('td');
-                title.classList.add('table_data');
-                title.textContent = film.title;
-                
-                const director = document.createElement('td');
-                director.classList.add('table_data');
-                director.textContent = film.directorName;
-                
-                const year = document.createElement('td');
-                year.classList.add('table_data');
-                year.textContent = film.yearReleased;
-                
-                const duration = document.createElement('td');
-                duration.classList.add('table_data');
-                duration.textContent = film.length;
-                
-                const genre = document.createElement('td');
-                genre.classList.add('table_data');
-                genre.textContent = film.genre;
-                
-                const deleteCell = document.createElement('td');
-                deleteCell.classList.add('table_data');
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Удалить';
-                deleteButton.addEventListener('click', () => deleteFilm(film.title, film.directorName));
-                deleteCell.appendChild(deleteButton);
-                
-                row.appendChild(title);
-                row.appendChild(director);
-                row.appendChild(year);
-                row.appendChild(duration);
-                row.appendChild(genre);
-                row.appendChild(deleteCell);
-                
-                tbody.appendChild(row);
-            });
-            
-            table.appendChild(tbody);
-            wrapper.appendChild(table);
-        })
-        .catch(error => console.error('Ошибка загрузки фильмов:', error));
+    .then(response => response.json())
+    .then(data => {
+        renderFilms(data); // Отображаем все фильмы
+    })
+    .catch(error => console.error('Ошибка при загрузке фильмов:', error));
+}
+
+// Функция для отображения фильмов в виде таблицы
+function renderFilms(data) {
+    const wrapper = document.querySelector('#films .wrapper');
+    wrapper.innerHTML = ''; // Очистка контейнера
+    
+    // Создание таблицы
+    const table = document.createElement('table');
+    table.classList.add('table');
+    
+    // Создание заголовков таблицы
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const headers = ['Название', 'Режиссер', 'Год выпуска', 'Длительность', 'Жанр', ''];
+    
+    headers.forEach(text => {
+        const th = document.createElement('th');
+        th.classList.add('col_header');
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    // Создание тела таблицы
+    const tbody = document.createElement('tbody');
+    
+    data.forEach(film => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="table_data">${film.title}</td>
+            <td class="table_data">${film.directorName}</td>
+            <td class="table_data">${film.yearReleased}</td>
+            <td class="table_data">${film.length}</td>
+            <td class="table_data">${film.genre}</td>
+            <td class="table_data"><button onclick="deleteFilm('${film.title}', '${film.directorName}')">Удалить</button></td>
+        `;
+
+        tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
 }
 
 // Функция для удаления фильма
@@ -160,7 +141,6 @@ function initModal() {
             length: parseInt(document.getElementById('duration').value),
             genre: document.getElementById('genre').value
         };
-        console.log(filmData)
 
         // Добавляем фильм
         addFilm(filmData);
@@ -196,4 +176,132 @@ function fetchGenres() {
         option.textContent = genre;
         genreSelect.appendChild(option);
     });
+}
+
+// Функция для отображения подсказок
+function displaySuggestions(suggestions) {
+    const suggestionsContainer = document.getElementById('suggestions'); 
+    suggestionsContainer.innerHTML = ''; // Очистка предыдущих подсказок
+
+    if (Array.isArray(suggestions)) {
+        suggestionsContainer.style.display = 'block';
+        
+        suggestions.forEach(suggestion => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.classList.add('suggestion');
+            suggestionItem.textContent = suggestion.title + ' ' + suggestion.directorName; // Вывод названия фильма
+
+            // Добавляем обработчик клика, чтобы выбрать подсказку
+            suggestionItem.addEventListener('click', () => selectSuggestion(suggestion));
+            suggestionsContainer.appendChild(suggestionItem);
+        });
+    }
+}
+
+// Функция для отправки запроса на сервер и получения подсказок
+function handleSearchInput(event) {
+    const query = event.target.value.trim();  // Получаем текст из инпута
+
+    if (query.length >= 1) {
+        // Отправляем запрос на сервер для получения подсказок
+        fetch('http://localhost:8080/api/v1/films/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: query,
+                director: null,
+                maxYearReleased: null,
+                minYearReleased: null,
+                maxLength: null,
+                minLength: null,
+                genre: null
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json()
+        })
+        .then(data => {
+            console.log(data);
+            displaySuggestions(data);  // Отображаем подсказки
+        })
+        .catch(error => console.error('Ошибка при получении подсказок:', error));
+    } 
+    else {
+        // Если строка поиска пустая, скрываем подсказки
+        displaySuggestions([]);
+    }
+}
+
+function handleSearchKeyDown(event) {
+    if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+        if (query) {
+            fetch('http://localhost:8080/api/v1/films/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: query,
+                    director: null,
+                    maxYearReleased: null,
+                    minYearReleased: null,
+                    maxLength: null,
+                    minLength: null,
+                    genre: null
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderFilms(data);
+            })
+            .catch(error => console.error('Ошибка при фильтрации фильмов:', error));
+        } else {
+            // Если строка поиска пустая, показываем все фильмы
+            fetchFilms(); // Отображаем все фильмы
+        }
+    }
+}
+
+// Функция для обработки выбора подсказки
+function selectSuggestion(film) {
+    const searchInput = document.querySelector('.search');
+    searchInput.value = film.title;  // Заполняем поле поиска выбранным названием
+    
+    // выполняем поиск по выбранному фильму
+    fetch('http://localhost:8080/api/v1/films/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: film.title,
+            director: null,
+            maxYearReleased: null,
+            minYearReleased: null,
+            maxLength: null,
+            minLength: null,
+            genre: null
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        renderFilms(data); // Отображаем найденные фильмы
+    })
+    .catch(error => console.error('Ошибка при фильтрации фильмов:', error));
+    
+    displaySuggestions([]);
+}
+
+function debounce(func, delay) {
+    let timeout;
+    return function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, arguments), delay);
+    };
 }
