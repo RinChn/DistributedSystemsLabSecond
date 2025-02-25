@@ -9,4 +9,5 @@ public interface DirectorService {
     List<DirectorDto> getAllDirectors();
     DirectorDto addDirector(DirectorDto directorDto);
     UUID deleteDirector(DirectorDto directorDto);
+    List<DirectorDto> searchDirectors(DirectorDto directorDto);
 }
