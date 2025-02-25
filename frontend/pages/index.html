@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../sass/style.css">
+    <title>Режиссеры</title>
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper header__wrapper">
+            <h1>Режиссеры</h1>
+            <nav class="header__navigation">
+                <ul class="navigation">
+                    <li class="navigation__link">Сеансы</li>
+                    <li class="navigation__link"><a href="../index.html">Фильмы</a></li>
+                    <li class="navigation__link"><a href="#">Режиссеры</a></li>
+                </ul>
+            </nav>
+            <input type="text" class="search" placeholder="Введите имя режиссера...">
+            <div id="suggestions"></div>
+        </div>
+    </header>
+
+    <main>
+        <section id="directors">
+            <div class="wrapper" >
+                <div id="director-list"></div>
+            </div>
+        </section>
+
+        <div id="modal" class="modal">
+            <div class="modal__content">
+                <span class="modal__close">&times;</span>
+                <h2>Добавить режиссера</h2>
+                <form id="director-form">
+                    <div class="form-item">
+                        <label for="name">Имя:</label>
+                        <input type="text" id="name" class="search" required>
+                    </div>
+                    
+                    <div class="form-item">
+                        <label for="last-name">Фамилия:</label>
+                        <input type="text" id="last-name" class="search" required>
+                    </div>
+                    
+                    <div class="form-item">
+                        <button type="submit" class="button button_main">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="wrapper footer__wrapper">
+            <button class="button button_main" id="modal__open">Добавить режиссера</button>
+        </div>
+    </footer>
+
+    <script src="../js/director.js"></script>
+</body>
+</html>
