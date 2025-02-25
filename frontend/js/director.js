@@ -58,3 +58,37 @@ function renderDirectors(data) {
     table.appendChild(tbody);
     wrapper.appendChild(table);
 }
+
+// Функция для удаления режиссера с проверкой на привязанные фильмы
+function deleteDirector(directorName) {
+    // Сначала получаем список всех фильмов
+    fetch('http://localhost:8080/api/v1/films')
+        .then(response => response.json())
+        .then(films => {
+            // Проверяем, есть ли у режиссера привязанные фильмы
+            const hasFilms = films.some(film => film.directorName === directorName);
+
+            if (hasFilms) {
+                // Если у режиссера есть привязанные фильмы, показываем предупреждение
+                alert("Невозможно удалить режиссера, так как у него есть привязанные фильмы.");
+            } else {
+                // Если привязанных фильмов нет, продолжаем удаление
+                fetch('http://localhost:8080/api/v1/directors', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(directorName)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        fetchDirectors(); // Обновление списка после удаления
+                    } else {
+                        console.error('Ошибка при удалении режиссера');
+                    }
+                })
+                .catch(error => console.error('Ошибка сети:', error));
+            }
+        })
+        .catch(error => console.error('Ошибка при получении списка фильмов:', error));
+}
