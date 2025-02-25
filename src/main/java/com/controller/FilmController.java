@@ -35,8 +35,9 @@ public class FilmController {
         return filmService.deleteFilm(request);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public List<FilmDto> searchFilms(@RequestBody FilmSearchFilter filter) {
+        
         return filmService.searchFilms(filter);
     }
 }
