@@ -1,0 +1,19 @@
+@use "../abstract/constant" as *;
+
+.link-text {
+    color: black;   
+    letter-spacing: .1rem;
+    transition: all .3s;
+    &:hover {
+        color: $color-main;
+    }
+}
+
+.link-title {
+    color: black;
+    text-decoration: none;
+    transition: all .3s;
+    &:hover {
+       color: $color-main; 
+    }
+}
