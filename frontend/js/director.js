@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Инициализация поисковой строки
     const searchInput = document.querySelector('.search');
-    //searchInput.addEventListener('input', debounce(handleSearchInput, 300));
-    //searchInput.addEventListener('keydown', handleSearchKeyDown);
+    searchInput.addEventListener('input', debounce(handleSearchInput, 300));
+    searchInput.addEventListener('keydown', handleSearchKeyDown);
 });
 
 // Функция для получения всех режиссеров
@@ -154,4 +154,108 @@ function deleteDirector(directorName) {
             }
         })
         .catch(error => console.error('Ошибка при получении списка фильмов:', error));
+}
+
+// Функция для отправки запроса на сервер и получения подсказок
+function handleSearchInput(event) {
+    const query = event.target.value.trim();  // Получаем текст из инпута
+
+    if (query.length >= 1) {
+        // Отправляем запрос на сервер для получения подсказок
+        fetch('http://localhost:8080/api/v1/directors/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: query })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json()
+        })
+        .then(data => {
+            console.log(data);
+            displaySuggestions(data);  // Отображаем подсказки
+        })
+        .catch(error => console.error('Ошибка при получении подсказок:', error));
+    } 
+    else {
+        // Если строка поиска пустая, скрываем подсказки
+        displaySuggestions([]);
+    }
+}
+
+// Функция для отображения подсказок
+function displaySuggestions(suggestions) {
+    const suggestionsContainer = document.getElementById('suggestions'); 
+    suggestionsContainer.innerHTML = ''; // Очистка предыдущих подсказок
+
+    if (Array.isArray(suggestions)) {
+        suggestionsContainer.style.display = 'block';
+        
+        suggestions.forEach(suggestion => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.classList.add('suggestion');
+            suggestionItem.textContent = suggestion.name; // Вывод названия фильма
+
+            // Добавляем обработчик клика, чтобы выбрать подсказку
+            suggestionItem.addEventListener('click', () => selectSuggestion(suggestion));
+            suggestionsContainer.appendChild(suggestionItem);
+        });
+    }
+}
+
+// Функция для обработки выбора подсказки
+function selectSuggestion(director) {
+    const searchInput = document.querySelector('.search');
+    searchInput.value = director.name;  // Заполняем поле поиска выбранным режиссером
+    
+    // выполняем поиск по режиссеру
+    fetch('http://localhost:8080/api/v1/directors/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: director.name })
+    })
+    .then(response => response.json())  
+    .then(data => {
+        renderDirectors(data); // Отображаем найденные фильмы
+    })
+    .catch(error => console.error('Ошибка при фильтрации фильмов:', error));
+    
+    displaySuggestions([]);
+}
+
+function handleSearchKeyDown(event) {
+    if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+        if (query) {
+            fetch('http://localhost:8080/api/v1/directors/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderDirectors(data);
+            })
+            .catch(error => console.error('Ошибка при фильтрации режиссеров:', error));
+        } else {
+            // Если строка поиска пустая, показываем все фильмы
+            fetchDirectors(); // Отображаем все фильмы
+        }
+    }
+}
+
+function debounce(func, delay) {
+    let timeout;
+    return function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, arguments), delay);
+    };
 }
