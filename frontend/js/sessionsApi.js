@@ -54,8 +54,17 @@ function renderSessions(data) {
             <td class="table_data">${formattedTime}</td>
             <td class="table_data">${session.film.title}</td>
             <td class="table_data">${session.film.directorName}</td>
-            <td class="table_data"><button class="button" onclick="">Управлять</button></td>
-            <td class="table_data"><button class="button delete-button" onclick=""></button></td>
+            <td class="table_data">
+                <button class="button addi-button" 
+                        onclick="viewSession('${session.time}', '${session.date}', '${session.cinemaHallNumber}')">
+                        Управлять
+                </button>
+            </td>
+            <td class="table_data">
+                <button class="button delete-button" 
+                        onclick="deleteSession('${session.time}', '${session.date}', '${session.cinemaHallNumber}')">
+                </button>
+            </td>
         `;
 
         tbody.appendChild(row);
@@ -132,4 +141,23 @@ function initModal() {
         // Очищаем форму
         form.reset();
     });
+}
+
+// Функция для удаления сеанса
+function deleteSession(time, date, cinemaHallNumber) {
+    fetch('http://localhost:8080/api/v1/sessions', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ time, date, cinemaHallNumber })
+    })
+    .then(response => {
+        if (response.ok) {
+            fetchSessions(); // Обновление списка после удаления
+        } else {
+            console.error('Ошибка при удалении сеанса');
+        }
+    })
+    .catch(error => console.error('Ошибка сети:', error));
 }
