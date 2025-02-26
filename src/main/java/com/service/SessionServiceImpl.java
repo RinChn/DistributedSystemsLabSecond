@@ -235,4 +235,21 @@ public class SessionServiceImpl implements SessionService {
                         .build())
                 .toList();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SessionResponse getSession(SessionSearchRequest sessionDto) {
+        Timestamp timestampOfSession = Timestamp.valueOf(LocalDateTime
+                .of(sessionDto.getDate(), sessionDto.getTime().toLocalTime()));
+        Session session = sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
+                .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_SESSION));
+        return SessionResponse.builder()
+                .time(new Time(session.getTimeAndDate().getTime()))
+                .film(conversionService.convert(session.getFilm(), FilmDto.class))
+                .date(session.getTimeAndDate().toLocalDateTime().atZone(ZoneId.systemDefault()).toLocalDate())
+                .cinemaHallNumber(session.getCinemaHallNumber())
+                .numberOfTicketsAvailable(ticketRepository.getTicketsBySessionAndBought(session, false).size())
+                .numberOfTicketsSold(ticketRepository.getTicketsBySessionAndBought(session, true).size())
+                .build();
+    }
 }

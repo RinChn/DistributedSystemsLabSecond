@@ -33,7 +33,7 @@ public class SessionController {
         return sessionService.addSession(session);
     }
 
-    @GetMapping("/tickets")
+    @PostMapping("/tickets")
     public List<TicketResponse> getAllTickets(@Valid @RequestBody SessionSearchRequest session) {
         return sessionService.getAllTickets(session);
     }
@@ -66,6 +66,11 @@ public class SessionController {
     @GetMapping("/search")
     public List<SessionResponse> searchSessions(@Valid @RequestBody SessionSearchFilter request) {
         return sessionService.searchSessions(request);
+    }
+
+    @PostMapping
+    public SessionResponse getSession(@RequestBody @Valid SessionSearchRequest sessionSearchRequest) {
+        return sessionService.getSession(sessionSearchRequest);
     }
 
 }

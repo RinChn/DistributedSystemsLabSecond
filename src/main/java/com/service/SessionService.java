@@ -20,4 +20,5 @@ public interface SessionService {
     SessionResponse unbookTicket(TicketRequest ticket);
     UUID deleteSession(SessionSearchRequest session);
     List<SessionResponse> searchSessions(SessionSearchFilter filter);
+    SessionResponse getSession(SessionSearchRequest sessionDto);
 }
