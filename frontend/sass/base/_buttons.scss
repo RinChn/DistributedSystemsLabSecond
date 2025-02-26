@@ -28,3 +28,10 @@
     background-position: center;
     background-repeat: no-repeat;
 }
+
+.filter-button {
+    background-color: $color-grey;
+    &:hover {
+        background-color: $color-dark-grey;
+    }
+}
