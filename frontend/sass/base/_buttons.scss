@@ -9,7 +9,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: all .3s;
-    background-color: $color-light;
+    background-color: transparent;
 }
 
 .button_main {
@@ -29,7 +29,7 @@
     background-repeat: no-repeat;
 }
 
-.filter-button {
+.addi-button {
     background-color: $color-grey;
     &:hover {
         background-color: $color-dark-grey;
