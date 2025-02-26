@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Загружаем список сеансов при загрузке страницы
     fetchSessions();
+    // Инициализация модального окна
+    initModal();
 });
 
 // Функция для получения всех сеансов
@@ -26,7 +28,7 @@ function renderSessions(data) {
     // Создание заголовков таблицы
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    const headers = ['Дата', 'Время', 'Название', '', ''];
+    const headers = ['Дата', 'Время', 'Название', 'Режиссер', '', ''];
     
     headers.forEach(text => {
         const th = document.createElement('th');
@@ -41,11 +43,17 @@ function renderSessions(data) {
     const tbody = document.createElement('tbody');
     
     data.forEach(session => {
+        // Преобразование даты в читаемый формат
+        const formattedDate = new Date(session.date).toLocaleDateString('ru-RU');
+        // Удаление секунд из времени (берем только HH:mm)
+        const formattedTime = session.time.substring(0, 5);
+        
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="table_data">${session.date}</td>
-            <td class="table_data">${session.time}</td>
-            <td class="table_data">${session.filmTitle}</td>
+            <td class="table_data">${formattedDate}</td>
+            <td class="table_data">${formattedTime}</td>
+            <td class="table_data">${session.film.title}</td>
+            <td class="table_data">${session.film.directorName}</td>
             <td class="table_data"><button class="button" onclick="">Управлять</button></td>
             <td class="table_data"><button class="button delete-button" onclick=""></button></td>
         `;
@@ -70,9 +78,58 @@ function addSession(session) {
         if (response.ok) {
             fetchSessions(); // Обновление списка после добавления
         } else {
-            console.error('Ошибка при добавлении фильма');
+            console.error('Ошибка при добавлении сеанса');
         }
     })
     .catch(error => console.error('Ошибка сети:', error));
 }
 
+// Функция для инициализации модального окна
+function initModal() {
+    const modal = document.getElementById("modal");
+    const openModalBtn = document.getElementById("modal__open");
+    const closeModalBtn = document.querySelector(".modal__close");
+    const form = document.getElementById("session-form");
+
+    // Открытие модального окна
+    openModalBtn.addEventListener("click", () => {
+        modal.style.display = "flex";
+    });
+
+    // Закрытие окна при клике на "×"
+    closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // Закрытие при клике вне окна
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // Обработчик отправки формы
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        // Собираем данные формы
+        const timeInput = document.getElementById('time').value;
+        const session = {
+            date: document.getElementById('date').value,
+            time: timeInput + ":00",
+            cinemaHallNumber: parseInt(document.getElementById('hall').value),
+            filmTitle: document.getElementById('title').value,
+            directorName: document.getElementById('director').value
+        };
+        console.log(session);
+
+        // Добавляем фильм
+        addSession(session);
+
+        // Закрываем модальное окно
+        modal.style.display = "none";
+
+        // Очищаем форму
+        form.reset();
+    });
+}
