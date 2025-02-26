@@ -211,7 +211,7 @@ function handleSearchInput(event) {
             },
             body: JSON.stringify({
                 title: query,
-                director: null,
+                directorName: null,
                 maxYearReleased: null,
                 minYearReleased: null,
                 maxLength: null,
