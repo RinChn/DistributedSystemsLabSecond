@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -21,9 +22,9 @@ public class SessionSearchFilter {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Time maxTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    Date minDate;
+    LocalDate minDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    Date maxDate;
+    LocalDate maxDate;
     Integer cinemaHallNumber;
     String movieName;
 }

@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -19,7 +20,7 @@ public class SessionCreateRequest {
     Time time;
     @NotNull(message = "The date cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    Date date;
+    LocalDate date;
     @NotNull(message = "The room number cannot be empty")
     Integer cinemaHallNumber;
     @NotBlank(message = "The title cannot be empty")

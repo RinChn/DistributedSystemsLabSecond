@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
 @Setter
 @Builder
 public class SessionResponse {
-    Date date;
+    LocalDate date;
     Time time;
     FilmDto film;
     Integer cinemaHallNumber;
