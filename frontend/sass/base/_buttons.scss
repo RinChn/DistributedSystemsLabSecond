@@ -9,6 +9,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: all .3s;
+    background-color: $color-light;
 }
 
 .button_main {
@@ -18,4 +19,12 @@
 
 .button_main:hover{
     background-color: $color-addi;
+}
+
+.delete-button {
+    height: 28px;
+    width: 28px;
+    background-image: url(../img/trash.svg);
+    background-position: center;
+    background-repeat: no-repeat;
 }

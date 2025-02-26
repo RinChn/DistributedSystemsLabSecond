@@ -1,12 +1,13 @@
 @use "abstract/constant" as *;
 
-@use "component/suggestions";
-
 @use "base/base";
 @use "base/buttons";
-@use "base/table";
-@use "base/searches";
-@use "base/forms";
+@use "base/link";
+
+@use "component/table";
+@use "component/searches";
+@use "component/forms";
+@use "component/suggestions";
 
 @use "layouts/wrapper";
 @use "layouts/header";

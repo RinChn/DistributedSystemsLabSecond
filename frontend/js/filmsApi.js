@@ -54,7 +54,7 @@ function renderFilms(data) {
             <td class="table_data">${film.yearReleased}</td>
             <td class="table_data">${film.length}</td>
             <td class="table_data">${film.genre}</td>
-            <td class="table_data"><button onclick="deleteFilm('${film.title}', '${film.directorName}')">Удалить</button></td>
+            <td class="table_data"><button class="button delete-button" onclick="deleteFilm('${film.title}', '${film.directorName}')"></button></td>
         `;
 
         tbody.appendChild(row);
@@ -211,7 +211,7 @@ function handleSearchInput(event) {
             },
             body: JSON.stringify({
                 title: query,
-                director: null,
+                directorName: null,
                 maxYearReleased: null,
                 minYearReleased: null,
                 maxLength: null,
