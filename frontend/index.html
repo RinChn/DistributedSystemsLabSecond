@@ -20,7 +20,7 @@
                     <li class="navigation__link"><a href="pages/directors.html" class="link-text">Режиссеры</a></li>
                 </ul>
             </nav>
-            <button class="button filter-button">Фильтр</button>
+            <button class="button addi-button">Фильтр</button>
         </div>
     </header>
 
@@ -30,6 +30,26 @@
                 <div id="session-list"></div>
             </div>
         </section>
+
+        <div id="modal-session" class="modal">
+            <div class="modal-session__wrapper">
+                <div class="film-details">
+                    <h2 class="film-details__title"></h2>
+                    <div class="film-details__info"><!-- жанр и режиссер --></div>
+                </div>
+                <div class="hall-details">
+                    <div class="hall-details__tickets">
+                        <p>Всего мест: <span class="total-seats"></span></p>
+                        <p>Свободных мест: <span class="available-seats"></span></p>
+                        <p>Забронированных мест: <span class="reserved-seats"></span></p>
+                    </div>
+                    <div class="hall-layout">
+                        <div class="hall-layout__screen">Экран</div>
+                        <div class="hall-layout__seats"><!-- тут отрисовываются сиденья --></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="modal" class="modal">
             <div class="modal__content">
