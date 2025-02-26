@@ -13,3 +13,9 @@ spring:
     cache-names: "searchDirectorCache"
     caffeine:
       spec: maximumSize=1,expireAfterWrite=1m
+  rabbitmq:
+    host: localhost
+    port: 5672
+    stream:
+      username: guest
+      password: guest
