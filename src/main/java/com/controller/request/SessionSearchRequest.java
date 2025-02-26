@@ -3,9 +3,11 @@ package com.controller.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,7 +20,7 @@ public class SessionSearchRequest {
     Time time;
     @NotNull(message = "The date cannot be empty")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    Date date;
+    LocalDate date;
     @NotNull(message = "The room number cannot be empty")
     Integer cinemaHallNumber;
 }

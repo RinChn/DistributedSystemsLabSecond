@@ -23,8 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
@@ -47,7 +48,7 @@ public class SessionServiceImpl implements SessionService {
                 .map(session -> SessionResponse.builder()
                         .time(new Time(session.getTimeAndDate().getTime()))
                         .film(conversionService.convert(session.getFilm(), FilmDto.class))
-                        .date(session.getTimeAndDate())
+                        .date(session.getTimeAndDate().toLocalDateTime().atZone(ZoneId.systemDefault()).toLocalDate())
                         .cinemaHallNumber(session.getCinemaHallNumber())
                         .numberOfTicketsAvailable(ticketRepository.getTicketsBySessionAndBought(session, false).size())
                         .numberOfTicketsSold(ticketRepository.getTicketsBySessionAndBought(session, true).size())
@@ -62,7 +63,7 @@ public class SessionServiceImpl implements SessionService {
         Film film = filmRepository
                 .findByTitleAndDirector(sessionDto.getFilmTitle(), director)
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_MOVIE));
-        Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), sessionDto.getDate());
+        Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), Date.valueOf(sessionDto.getDate()));
         log.info("{}", timestampOfSession);
         sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
                 .ifPresent(_ -> {
@@ -106,7 +107,7 @@ public class SessionServiceImpl implements SessionService {
     @Transactional(readOnly = true)
     public List<TicketResponse> getAllTickets(SessionSearchRequest sessionDto) {
         Timestamp timestampOfSession = Timestamp.valueOf(LocalDateTime
-                .of(sessionDto.getDate().toLocalDate(), sessionDto.getTime().toLocalTime()));
+                .of(sessionDto.getDate(), sessionDto.getTime().toLocalTime()));
         Session session = sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_SESSION));
         return ticketRepository.getAllTicketsBySession(session).stream()
@@ -117,7 +118,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional(readOnly = true)
     public List<TicketResponse> getAvailableTickets(SessionSearchRequest sessionDto) {
-        Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), sessionDto.getDate());
+        Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), Date.valueOf(sessionDto.getDate()));
         Session session = sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_SESSION));
         return ticketRepository.getTicketsBySessionAndBought(session, false).stream()
@@ -128,7 +129,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional(readOnly = true)
     public List<TicketResponse> getNotAvailableTickets(SessionSearchRequest sessionDto) {
-        Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), sessionDto.getDate());
+        Timestamp timestampOfSession = getTimestamp(sessionDto.getTime(), Date.valueOf(sessionDto.getDate()));
         Session session = sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_SESSION));
         return ticketRepository.getTicketsBySessionAndBought(session, true).stream()
@@ -148,7 +149,7 @@ public class SessionServiceImpl implements SessionService {
         return SessionResponse.builder()
                 .time(new Time(session.getTimeAndDate().getTime()))
                 .film(conversionService.convert(session.getFilm(), FilmDto.class))
-                .date(session.getTimeAndDate())
+                .date(session.getTimeAndDate().toLocalDateTime().atZone(ZoneId.systemDefault()).toLocalDate())
                 .cinemaHallNumber(session.getCinemaHallNumber())
                 .numberOfTicketsAvailable(ticketRepository.getTicketsBySessionAndBought(session, false).size())
                 .numberOfTicketsSold(ticketRepository.getTicketsBySessionAndBought(session, true).size())
@@ -176,7 +177,7 @@ public class SessionServiceImpl implements SessionService {
         return SessionResponse.builder()
                 .time(new Time(session.getTimeAndDate().getTime()))
                 .film(conversionService.convert(session.getFilm(), FilmDto.class))
-                .date(session.getTimeAndDate())
+                .date(session.getTimeAndDate().toLocalDateTime().atZone(ZoneId.systemDefault()).toLocalDate())
                 .cinemaHallNumber(session.getCinemaHallNumber())
                 .numberOfTicketsAvailable(ticketRepository.getTicketsBySessionAndBought(session, false).size())
                 .numberOfTicketsSold(ticketRepository.getTicketsBySessionAndBought(session, true).size())
@@ -187,7 +188,7 @@ public class SessionServiceImpl implements SessionService {
     @Transactional
     public UUID deleteSession(SessionSearchRequest sessionDto) {
         Timestamp timestampOfSession = Timestamp.valueOf(LocalDateTime
-                .of(sessionDto.getDate().toLocalDate(), sessionDto.getTime().toLocalTime()));
+                .of(sessionDto.getDate(), sessionDto.getTime().toLocalTime()));
         Session session = sessionRepository.findByDatetimeAndHallNumber(timestampOfSession, sessionDto.getCinemaHallNumber())
                 .orElseThrow(() -> new ApplicationException(ErrorType.NON_EXISTENT_SESSION));
         ticketRepository.deleteAll(ticketRepository.getAllTicketsBySession(session));
@@ -208,26 +209,26 @@ public class SessionServiceImpl implements SessionService {
             maxTime = filter.getMaxTime();
         else
             maxTime = Time.valueOf("23:59:59");
-        Date minDate;
+        LocalDate minDate;
         if (filter.getMinDate() != null)
             minDate = filter.getMinDate();
         else
-            minDate = Date.valueOf("1895-12-28");
-        Date maxDate;
+            minDate = Date.valueOf("1895-12-28").toLocalDate();
+        LocalDate maxDate;
         if (filter.getMaxDate() != null)
             maxDate = filter.getMaxDate();
         else
-            maxDate = Date.valueOf("3000-12-31");
-        Timestamp minTimestamp = getTimestamp(minTime, minDate);
+            maxDate = Date.valueOf("3000-12-31").toLocalDate();
+        Timestamp minTimestamp = getTimestamp(minTime, Date.valueOf(minDate));
         log.info("Min time and date {}", minTimestamp);
-        Timestamp maxTimestamp = getTimestamp(maxTime, maxDate);
+        Timestamp maxTimestamp = getTimestamp(maxTime, Date.valueOf(maxDate));
         log.info("Max time and date {}", maxTimestamp);
         return sessionRepository.findSessionsByFilter(minTimestamp, maxTimestamp,
                 filter.getCinemaHallNumber(), filter.getMovieName()).stream()
                 .map(session -> SessionResponse.builder()
                         .time(new Time(session.getTimeAndDate().getTime()))
                         .film(conversionService.convert(session.getFilm(), FilmDto.class))
-                        .date(session.getTimeAndDate())
+                        .date(session.getTimeAndDate().toLocalDateTime().toLocalDate())
                         .cinemaHallNumber(session.getCinemaHallNumber())
                         .numberOfTicketsAvailable(ticketRepository.getTicketsBySessionAndBought(session, false).size())
                         .numberOfTicketsSold(ticketRepository.getTicketsBySessionAndBought(session, true).size())
