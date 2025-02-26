@@ -68,4 +68,9 @@ public class SessionController {
         return sessionService.searchSessions(request);
     }
 
+    @PostMapping
+    public SessionResponse getSession(@RequestBody @Valid SessionSearchRequest sessionSearchRequest) {
+        return sessionService.getSession(sessionSearchRequest);
+    }
+
 }
