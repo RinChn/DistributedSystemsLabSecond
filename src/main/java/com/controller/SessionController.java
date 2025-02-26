@@ -33,17 +33,17 @@ public class SessionController {
         return sessionService.addSession(session);
     }
 
-    @GetMapping("/tickets")
+    @PostMapping("/tickets")
     public List<TicketResponse> getAllTickets(@Valid @RequestBody SessionSearchRequest session) {
         return sessionService.getAllTickets(session);
     }
 
-    @GetMapping("/tickets/available")
+    @PostMapping("/tickets/available")
     public List<TicketResponse> getAvailableTickets(@Valid @RequestBody SessionSearchRequest session) {
         return sessionService.getAvailableTickets(session);
     }
 
-    @GetMapping("/tickets/notavailable")
+    @PostMapping("/tickets/notavailable")
     public List<TicketResponse> getNotAvailableTickets(@Valid @RequestBody SessionSearchRequest session) {
         return sessionService.getNotAvailableTickets(session);
     }
@@ -63,7 +63,7 @@ public class SessionController {
         return sessionService.deleteSession(sessionSearchRequest);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public List<SessionResponse> searchSessions(@Valid @RequestBody SessionSearchFilter request) {
         return sessionService.searchSessions(request);
     }
